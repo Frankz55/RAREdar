@@ -4,7 +4,7 @@ Cleaned up version of the newRAREdar
 # TODOs
 
 - update this README with brief instructions about how to run. Rename the screenshots and include them in the README.
-- Create directories to organize your files: output/ input/ src/
+- Create directories to organize your files: output/ input/ src/ [Done]
 - Merge this branch into `main` when you're done. [Done]
 
 Comments/questions for `RAREdar.py`:
