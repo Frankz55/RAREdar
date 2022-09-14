@@ -2,7 +2,7 @@
 
 def main():
 
-    fileHandle = open('RetinalGene.csv')
+    fileHandle = open('D_rerio_RetinalGene.csv')
     fileLining = fileHandle.readlines()
 
     geneList = []
@@ -14,7 +14,7 @@ def main():
             if gene not in geneList:
                 geneList.append(gene)
 
-    fileName = 'CandidateGenes.txt'
+    fileName = 'D_rerio_Retinal_Set.txt'
     fileWrite = open(fileName,'w')
 
     for gene in geneList:
