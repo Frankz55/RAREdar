@@ -1,0 +1,8 @@
+Chromosome	Gene	Mode	Coordinate	Sequence
+	12	dna_cyp26a1_GRCz11	Reversed Coding	8962266	GGGTCACCAGCGGGTCA
+	12	dna_cyp26a1_GRCz11	Forward Complement	8960227	TGAACTATCCTTGAACT
+	12	dna_cyp26a1_GRCz11	Forward Complement	8958431	TGAACTTTGTGTGAACT
+	19	dna_tshz1_GRCz11	Reversed Coding	21277612	AGATCATATTAAGATCA
+	19	dna_tshz1_GRCz11	Forward Coding	21305809	ACTGGTTAAAAACTGGT
+	21	dna_nr6a1b_GRCz11	Forward Coding	8215065	ACTTGAAGTTTACTTGA
+	21	dna_nr6a1b_GRCz11	Forward Coding	8244049	ACTAGTGCTTGACTAGT

@@ -8,18 +8,16 @@ import utility as u
 
 def main():
 
-    MotifList = ['ACTTGA','ACTTGG','ACTTGT','ACTGGA','ACTGGG','ACTGGT','ACTAGA','ACTAGG','ACTAGT']
-    ReverseList = ['TGAACT','TGACCT','TGATCT','TGAACC','TGACCC','TGACCA','TGATCT','TGATCC','TGATCA']
-    GeneDictionary = u.readFasta('Gene_Sequence_List.fa')
+    MotifList = ['ACTTGA','ACTTGG','ACTTGT','ACTGGA','ACTGGG','ACTGGT','ACTAGA','ACTAGG','ACTAGT'] #This is the original, 5'-3' 8 variants of RARE motif
+    ReverseList = ['TGAACT','TGACCT','TGATCT','TGAACC','TGACCC','TGACCA','TGATCT','TGATCC','TGATCA'] #This is the COMPLEMENT variants to the RARE motif (3'-5') on the ANTISENSE strand
+    GeneDictionary = u.readFasta('Sanity_Check_Set/D_rerio_Sanity_Set.fa')
     #print(GeneDictionary)
 
-    hitDictionary,positionDictionary,sequenceDictionary = RAREdar(GeneDictionary, MotifList, ReverseList)#Run RAREdar
+    hitDictionary,positionDictionary,sequenceDictionary = RAREdar(GeneDictionary, MotifList, ReverseList) #Run RAREdar
 
-    #u.write_output(hitDictionary, 'mockPWM')
-    truepositionDictionary = con_coord(positionDictionary)
-    #u.write_output(truepositionDictionary, 'mockPWM', data_type = 'position')
-    #u.write_output(sequenceDictionary, 'mockPWM', data_type = 'sequence')
-    auto_merger(MotifList, ReverseList, hitDictionary, truepositionDictionary, sequenceDictionary)
+    truepositionDictionary = con_coord(positionDictionary) #RAREdar outputs coordinates RELATIVE to the gene of interest. This function converts the data to TRUE coordinates on the chromosome
+
+    auto_merger(MotifList, ReverseList, hitDictionary, truepositionDictionary, sequenceDictionary) #Outputs raw data as a tab delimited file
 
     return
 
@@ -115,7 +113,7 @@ def auto_merger(DRList, RDRList, hitDictionary, positionDictionary, sequenceDict
     DRReverse = [r[::-1] for r in DRList]
     RDRReverse = [r[::-1] for r in RDRList]
 
-    fileName = 'RAREdar_Results.txt'
+    fileName = 'output/RAREdar_Results.txt'
     fileWrite = open(fileName,'w')
     fileWrite.write('Chromosome'+'\t'+'Gene'+'\t'+'Mode'+'\t'+'Coordinate'+'\t'+'Sequence'+'\n')
     Entry = ''
