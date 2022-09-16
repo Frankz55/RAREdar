@@ -10,7 +10,7 @@ def main():
 
     MotifList = ['ACTTGA','ACTTGG','ACTTGT','ACTGGA','ACTGGG','ACTGGT','ACTAGA','ACTAGG','ACTAGT'] #This is the original, 5'-3' 8 variants of RARE motif
     ReverseList = ['TGAACT','TGACCT','TGATCT','TGAACC','TGACCC','TGACCA','TGATCT','TGATCC','TGATCA'] #This is the COMPLEMENT variants to the RARE motif (3'-5') on the ANTISENSE strand
-    GeneDictionary = u.readFasta('Sanity_Check_Set/D_rerio_Sanity_Set.fa')
+    GeneDictionary = u.readFasta('Retinal_Candidate_Set/D_rerio_Retinal_Sequence.txt')
     #print(GeneDictionary)
 
     hitDictionary,positionDictionary,sequenceDictionary = RAREdar(GeneDictionary, MotifList, ReverseList) #Run RAREdar
@@ -67,10 +67,10 @@ def RAREdar(dictionary, DRList, RDRList):
                     hits = hits + 1 #record valid hit
                     hitPosition = hitPosition + [bp]
                     hitSequence = hitSequence + [sequence[bp:bp+17]]
-        hitDictionary[name] = hits #Assign hit info as values to the gene reference number as keys
-        #print(hitDictionary)
-        positionDictionary[name] = hitPosition
-        sequenceDictionary[name] = hitSequence
+        if hits != 0:
+            hitDictionary[name] = hits #Assign hit info as values to the gene reference number as keys
+            positionDictionary[name] = hitPosition
+            sequenceDictionary[name] = hitSequence
         hits = 0 #reinitialize all objects
         hitPosition = []
         hitSequence = []
@@ -87,15 +87,19 @@ def RAREdar(dictionary, DRList, RDRList):
 def con_coord(dictionary):
     newdict = {}
     for name in dictionary.keys():
-        title = name.split() #Add ID info to every RARE hit
-        start = int(title[3])
-        end = int(title[4])
-        status = int(title[5])
+        title = name.split(' ') #Add ID info to every RARE hit
+        coordRange = title[1][6:]
+        position = coordRange.split(':')
+        chromosome = position[0]
+        coordinate = position[1].split('-')
+        start = int(coordinate[0])
+        end = int(coordinate[1])
+        status = title[4][-1]
         truecoord = []
-        if status == 1: #Situation for gene on forward strand
+        if status == '+': #Situation for gene on forward strand
             for coord in dictionary[name]:
                 truecoord = truecoord + [start+coord] #True coordinate by adding relative coordinate to gene starting coordinate
-        elif status == -1: #Situation for gene on reversed starnd
+        elif status == '-': #Situation for gene on reversed starnd
             for coord in dictionary[name]:
                 truecoord = truecoord + [end-coord-17] #True coordinate by subtracting relative coordinate to gene ending coordinate
         newdict[name] = truecoord
@@ -118,9 +122,11 @@ def auto_merger(DRList, RDRList, hitDictionary, positionDictionary, sequenceDict
     fileWrite.write('Chromosome'+'\t'+'Gene'+'\t'+'Mode'+'\t'+'Coordinate'+'\t'+'Sequence'+'\n')
     Entry = ''
     for name in hitDictionary.keys():
-        title = name.split()
-        chromosome = title[2]
-        geneName = title[1]
+        title = name.split(' ')
+        coordRange = title[1][6:]
+        position = coordRange.split(':')
+        chromosome = position[0]
+        geneName = title[0]
         coordList = positionDictionary[name]
         sequenceList = sequenceDictionary[name]
         for i in range(len(coordList)):
@@ -135,7 +141,7 @@ def auto_merger(DRList, RDRList, hitDictionary, positionDictionary, sequenceDict
                 mode = 'Reversed Complement'
             else:
                 mode = 'Exception'
-            Entry = Entry +'\t' + chromosome +'\t' + geneName +'\t' + mode +'\t' + str(coordList[i]) +'\t' + sequenceList[i] + '\n'
+            Entry = Entry + chromosome +'\t' + geneName +'\t' + mode +'\t' + str(coordList[i]) +'\t' + sequenceList[i] + '\n'
             fileWrite.write(Entry)
     return
 
