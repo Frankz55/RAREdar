@@ -119,7 +119,7 @@ def auto_merger(DRList, RDRList, hitDictionary, positionDictionary, sequenceDict
 
     fileName = 'output/RAREdar_Results.txt'
     fileWrite = open(fileName,'w')
-    fileWrite.write('Chromosome'+'\t'+'Gene'+'\t'+'Mode'+'\t'+'Coordinate'+'\t'+'Sequence'+'\n')
+    fileWrite.write('Chromosome'+'\t'+'Gene'+'\t'+'Mode'+'\t'+'Coordinate'+'\t'+'Original Sequence'+'\t'+'Sense Sequence'+'\n')
     Entry = ''
     for name in hitDictionary.keys():
         title = name.split(' ')
@@ -133,15 +133,39 @@ def auto_merger(DRList, RDRList, hitDictionary, positionDictionary, sequenceDict
             Entry = ''
             if any(sequenceList[i][0:6] == dr for dr in DRList):
                 mode = 'Forward Coding'
+                senseSequence = str(sequenceList[i])
             elif any(sequenceList[i][0:6] == dr for dr in RDRList):
                 mode = 'Forward Complement'
+                senseSequence = ''
+                for bp in range(len(sequenceList[i])):
+                    if sequenceList[i][bp] == 'A':
+                        senseSequence = senseSequence + 'T'
+                    elif sequenceList[i][bp] == 'T':
+                        senseSequence = senseSequence + 'A'
+                    elif sequenceList[i][bp] == 'G':
+                        senseSequence = senseSequence + 'C'
+                    elif sequenceList[i][bp] == 'C':
+                        senseSequence = senseSequence + 'G'
             elif any(sequenceList[i][0:6] == dr for dr in DRReverse):
                 mode = 'Reversed Coding'
+                senseSequence = str(sequenceList[i][::-1])
             elif any(sequenceList[i][0:6] == dr for dr in RDRReverse):
                 mode = 'Reversed Complement'
+                revSequence = str(sequenceList[i][::-1])
+                senseSequence = ''
+                for bp in range(len(revSequence)):
+                    if revSequence[bp] == 'A':
+                        senseSequence = senseSequence + 'T'
+                    elif revSequence[bp] == 'T':
+                        senseSequence = senseSequence + 'A'
+                    elif revSequence[bp] == 'G':
+                        senseSequence = senseSequence + 'C'
+                    elif revSequence[bp] == 'C':
+                        senseSequence = senseSequence + 'G'
             else:
                 mode = 'Exception'
-            Entry = Entry + chromosome +'\t' + geneName +'\t' + mode +'\t' + str(coordList[i]) +'\t' + sequenceList[i] + '\n'
+                senseSequence = 'n/a'
+            Entry = Entry + chromosome +'\t' + geneName +'\t' + mode +'\t' + str(coordList[i]) +'\t' + sequenceList[i] + '\t' + senseSequence + '\n'
             fileWrite.write(Entry)
     return
 
